@@ -1,0 +1,142 @@
+---
+ src/common.c      |    1 +
+ src/common.h      |    8 ++++++--
+ src/curses.c      |    2 +-
+ src/curses.h      |    8 ++++++--
+ src/gtk.h         |   38 +++++++++++++++++++++-----------------
+ src/interactive.h |    2 +-
+ 6 files changed, 36 insertions(+), 23 deletions(-)
+
+--- a/src/common.c
++++ b/src/common.c
+@@ -20,6 +20,7 @@
+  * Suite 330, Boston, MA 02111-1307, USA.
+  */
+ 
++#define EXTERN
+ #include "common.h"
+ #ifdef HAVE_CURSES
+ #include "curses.h"
+--- a/src/common.h
++++ b/src/common.h
+@@ -17,6 +17,10 @@
+  * Suite 330, Boston, MA 02111-1307, USA.
+  */
+ 
++#ifndef EXTERN
++#define EXTERN extern
++#endif
++
+ #ifndef AUMIX_H
+ #define AUMIX_H
+ #include "../config.h"
+@@ -133,8 +137,8 @@ extern int      ReadLevel(int device, in
+ extern int      ReadRecSrc(void);
+ extern int      WriteRecSrc(void);
+ int             ReadWriteMixer(int device, char *rw, int *left, int *right, char *rp);
+-int             ourlevel[SOUND_MIXER_NRDEVICES];
+-int             our_recplay[SOUND_MIXER_NRDEVICES];	/* Store record/play settings for updates. */
++EXTERN int             ourlevel[SOUND_MIXER_NRDEVICES];
++EXTERN int             our_recplay[SOUND_MIXER_NRDEVICES];	/* Store record/play settings for updates. */
+ int             LoadSettings(void);
+ int             SaveSettings(void);
+ int             dummy_ioctl(int fd, unsigned long req, int *arg);
+--- a/src/curses.h
++++ b/src/curses.h
+@@ -17,6 +17,10 @@
+  * Suite 330, Boston, MA 02111-1307, USA.
+  */
+ 
++#ifndef EXTERN
++#define EXTERN extern
++#endif
++
+ #ifndef AUMIX_CURSES_H
+ #define AUMIX_CURSES_H
+ #if HAVE_CURSES
+@@ -88,8 +92,8 @@ static int      LABELSIZES[] = {
+ };
+ #define ARROW_WIDTH 1		/* width of selection arrow */
+ #define R_P_WIDTH 1		/* width of record/play indicator */
+-int             level_increment, balance_increment, menu_width, level_width, label_width, balance_width, levelbalmode;
+-int             (*Wgetch) (WINDOW * win);
++extern int             level_increment, balance_increment, menu_width, level_width, label_width, balance_width, levelbalmode;
++EXTERN int             (*Wgetch) (WINDOW * win);
+ #define Getch() (*Wgetch)(stdscr)
+ void            WakeUpCurses(void);
+ void            InitScreenCurses(void);
+--- a/src/gtk.h
++++ b/src/gtk.h
+@@ -1,5 +1,9 @@
+ /* $Aumix: aumix/src/gtk.h,v 1.3 2002/12/12 04:38:09 trevor Exp $ */
+ 
++#ifndef EXTERN
++#define EXTERN extern
++#endif
++
+ #ifndef AUMIX_GTK_H
+ #define AUMIX_GTK_H
+ #define BORDER 2
+@@ -7,23 +11,23 @@
+ #include <sys/mman.h>
+ #include <gtk/gtk.h>
+ 
+-GdkBitmap      *rmask;
+-GdkBitmap      *pmask;
+-GtkWidget      *pixmapwid[SOUND_MIXER_NRDEVICES];
+-GdkPixmap      *record_pixmap;
+-GdkPixmap      *play_pixmap;
+-GtkAdjustment  *adjustment[SOUND_MIXER_NRDEVICES];
+-GtkAdjustment  *balance[SOUND_MIXER_NRDEVICES];
+-GtkWidget      *baltracks[SOUND_MIXER_NRDEVICES];
+-GtkWidget      *channellabel[SOUND_MIXER_NRDEVICES];
+-GtkToggleButton *rpbuttons[SOUND_MIXER_NRDEVICES];
+-GtkWidget      *levels[SOUND_MIXER_NRDEVICES];
+-GtkWidget      *maintable;
+-gint            balcallback[SOUND_MIXER_NRDEVICES];
+-gint            lvlcallback[SOUND_MIXER_NRDEVICES];
+-gint            rpcallback[SOUND_MIXER_NRDEVICES];
+-gboolean        menuvisible, balancevisible, recplayvisible, valuesvisible, visible[SOUND_MIXER_NRDEVICES];
+-GtkWidget      *labelrec, *labelzero, *labelcent, *labelleft, *labelright, *labelbalance;
++EXTERN GdkBitmap      *rmask;
++EXTERN GdkBitmap      *pmask;
++EXTERN GtkWidget      *pixmapwid[SOUND_MIXER_NRDEVICES];
++EXTERN GdkPixmap      *record_pixmap;
++EXTERN GdkPixmap      *play_pixmap;
++EXTERN GtkAdjustment  *adjustment[SOUND_MIXER_NRDEVICES];
++EXTERN GtkAdjustment  *balance[SOUND_MIXER_NRDEVICES];
++EXTERN GtkWidget      *baltracks[SOUND_MIXER_NRDEVICES];
++EXTERN GtkWidget      *channellabel[SOUND_MIXER_NRDEVICES];
++EXTERN GtkToggleButton *rpbuttons[SOUND_MIXER_NRDEVICES];
++EXTERN GtkWidget      *levels[SOUND_MIXER_NRDEVICES];
++EXTERN GtkWidget      *maintable;
++EXTERN gint            balcallback[SOUND_MIXER_NRDEVICES];
++EXTERN gint            lvlcallback[SOUND_MIXER_NRDEVICES];
++EXTERN gint            rpcallback[SOUND_MIXER_NRDEVICES];
++EXTERN gboolean        menuvisible, balancevisible, recplayvisible, valuesvisible, visible[SOUND_MIXER_NRDEVICES];
++EXTERN GtkWidget      *labelrec, *labelzero, *labelcent, *labelleft, *labelright, *labelbalance;
+ void            WakeUpGTK(void);
+ void            HideShowBalancesGTK(void);
+ void            HideShowNumbersGTK(void);
+--- a/src/interactive.h
++++ b/src/interactive.h
+@@ -7,7 +7,7 @@
+ #define MUTE_ONLY 2
+ #define        REFRESH_PERIOD 1	/* number of seconds between updates */
+ 
+-unsigned char  *key_keys, *key_load, *key_mute, *key_only, *key_quit, *key_save, *key_undo;
++extern unsigned char  *key_keys, *key_load, *key_mute, *key_only, *key_quit, *key_save, *key_undo;
+ void            AumixSignalHandler(int signal_number);
+ void            InitScreen(void);
+ void            KeysBox(void);
+--- a/src/curses.c
++++ b/src/curses.c
+@@ -27,7 +27,7 @@
+ #include "mouse.h"
+ 
+ unsigned char  *key_keys, *key_load, *key_mute, *key_only, *key_quit, *key_save, *key_undo, *lang;
+-int             current_dev, level_increment, balance_increment, menu_width, level_width, label_width, balance_width, levelbalmode, cols_saved, lines_saved;
++int             level_increment, balance_increment, menu_width, level_width, label_width, balance_width, levelbalmode, cols_saved, lines_saved;
+ int             in_keysbox = FALSE;
+ static int	cursor_x, cursor_y;	/* keep track of cursor position */
+ 
