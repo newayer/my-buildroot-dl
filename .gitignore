@@ -1,5 +1,6 @@
 .lock
 linux/
-smartbox/
 uboot/
+smartbox/
 radar/
+paver/
